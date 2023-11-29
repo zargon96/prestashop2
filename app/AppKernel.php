@@ -133,7 +133,7 @@ class AppKernel extends Kernel
             return;
         }
 
-        $this->unlockCacheStream(self::$lockStream);
+        $this->unlockCacheStream(self::$lockStream); 
         self::$lockStream = null;
     }
 

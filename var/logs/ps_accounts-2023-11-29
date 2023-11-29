@@ -1,2 +1,3 @@
 [2023-11-29 10:06:24] ps_accounts.INFO: Install - Loading ps_accounts Env : [] [] []
 [2023-11-29 11:37:10] ps_accounts.DEBUG: Error trying to PATCH shop : No $response object [] []
+[2023-11-29 12:03:55] ps_accounts.INFO: Ps_accounts::resetCircuitBreaker [] []

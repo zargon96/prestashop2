@@ -42,16 +42,16 @@ class MyCustomModule extends Module
         $bannerColor = '';
 
         if ($quantitaDisplonibile >= 10) {
-            $bannerText = $this->l('ampiamente disponibile');
+            $bannerText = $this->l('Ampiamente disponibile');
             $bannerColor = 'green';
         } elseif ($quantitaDisplonibile >= 5 && $quantitaDisplonibile < 10) {
-            $bannerText = $this->l('ultime possibilità');
+            $bannerText = $this->l('Ultime possibilità');
             $bannerColor = 'red';
         } elseif ($quantitaDisplonibile > 0 && $quantitaDisplonibile < 5) {
-            $bannerText = $this->l('quasi terminato');
+            $bannerText = $this->l('Quasi terminato');
             $bannerColor = 'red';
         } elseif ($quantitaDisplonibile == 0) {
-            $bannerText = $this->l('terminato');
+            $bannerText = $this->l('Terminato');
             $bannerColor = 'red';
         }
 

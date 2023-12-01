@@ -1,4 +1,0 @@
-[2023-11-30 09:39:41] ps_accounts.INFO: Ps_accounts::resetCircuitBreaker [] []
-[2023-11-30 09:51:41] ps_accounts.DEBUG: Error trying to PATCH shop : No $response object [] []
-[2023-11-30 09:52:14] ps_accounts.DEBUG: Error trying to PATCH shop : No $response object [] []
-[2023-11-30 12:56:27] ps_accounts.INFO: Ps_accounts::resetCircuitBreaker [] []

@@ -10,7 +10,7 @@ class MyCustomModule extends Module
     {
         $this->name = 'mycustommodule';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'Marco';
         $this->need_instance = 0;
 
@@ -23,7 +23,7 @@ class MyCustomModule extends Module
     public function install()
     {
         return parent::install() &&
-            $this->registerHook('displayProductTabContent');
+            $this->registerHook('displayProductActions');
     }
 
     public function uninstall()
@@ -31,7 +31,7 @@ class MyCustomModule extends Module
         return parent::uninstall();
     }
 
-    public function hookDisplayProductTabContent($params)
+    public function hookDisplayProductActions($params)
     {
         return $this->display(__FILE__, 'views/templates/hook/product_tab_content.tpl');
     }

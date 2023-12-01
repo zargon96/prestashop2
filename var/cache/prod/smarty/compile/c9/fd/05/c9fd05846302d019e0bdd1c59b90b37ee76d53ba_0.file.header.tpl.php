@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 4.3.1, created on 2023-11-29 11:43:30
+/* Smarty version 4.3.1, created on 2023-11-30 12:38:00
   from 'C:\laragon\www\prestashop\adminps\themes\default\template\header.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '4.3.1',
-  'unifunc' => 'content_656715d22b2901_75079412',
+  'unifunc' => 'content_65687418719b30_84440522',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -22,7 +22,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:nav.tpl' => 1,
   ),
 ),false)) {
-function content_656715d22b2901_75079412 (Smarty_Internal_Template $_smarty_tpl) {
+function content_65687418719b30_84440522 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <!--[if lt IE 7]> <html lang="<?php echo $_smarty_tpl->tpl_vars['iso']->value;?>
 " class="no-js lt-ie9 lt-ie8 lt-ie7 lt-ie6"> <![endif]-->
@@ -525,7 +525,7 @@ if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['menuItem']->valu
 $_smarty_tpl->tpl_vars['menuItem']->do_else = false;
 $_smarty_tpl->tpl_vars['menuItem']->iteration++;
 $_smarty_tpl->tpl_vars['menuItem']->last = $_smarty_tpl->tpl_vars['menuItem']->iteration === $_smarty_tpl->tpl_vars['menuItem']->total;
-$__foreach_menuItem_13_saved = $_smarty_tpl->tpl_vars['menuItem'];
+$__foreach_menuItem_38_saved = $_smarty_tpl->tpl_vars['menuItem'];
 ?>
               <?php $_smarty_tpl->_assignInScope('menuItemProperties', $_smarty_tpl->tpl_vars['menuItem']->value->getProperties());?>
               <li class="<?php echo $_smarty_tpl->tpl_vars['menuItem']->value->getClass();?>
@@ -542,7 +542,7 @@ echo $_smarty_tpl->tpl_vars['menuItem']->value->getContent();?>
                 <p class="divider"></p>
               <?php }?>
             <?php
-$_smarty_tpl->tpl_vars['menuItem'] = $__foreach_menuItem_13_saved;
+$_smarty_tpl->tpl_vars['menuItem'] = $__foreach_menuItem_38_saved;
 }
 $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 

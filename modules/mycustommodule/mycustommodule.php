@@ -67,6 +67,9 @@ class MyCustomModule extends Module
         // Mostra il banner nel template
         return $this->display(__FILE__, 'views/templates/hook/product_tab_content.tpl');
     }
+
+
+
    
 }
 

@@ -33,29 +33,29 @@ class MyCustomModule extends Module
 
     public function hookDisplayProductActions($params)
     {
-        // Ottenere la quantità disponibile del prodotto corrente
-        $product = $params['product'];
-        $quantityAvailable = $product->quantity;
+        // otteniamo la quantità disponbile del prodotto
+        $prodotto = $params['product'];
+        $quantitaDisplonibile = $prodotto->quantita;
 
-        // Determinare il testo e il colore del banner in base alla quantità disponibile
+        // Determina il testo e il colore del banner in base alla quantità disponibile
         $bannerText = '';
         $bannerColor = '';
 
-        if ($quantityAvailable >= 10) {
+        if ($quantitaDisplonibile >= 10) {
             $bannerText = $this->l('ampiamente disponibile');
             $bannerColor = 'green';
-        } elseif ($quantityAvailable >= 5 && $quantityAvailable < 10) {
+        } elseif ($quantitaDisplonibile >= 5 && $quantitaDisplonibile < 10) {
             $bannerText = $this->l('ultime possibilità');
             $bannerColor = 'red';
-        } elseif ($quantityAvailable > 0 && $quantityAvailable < 5) {
+        } elseif ($quantitaDisplonibile > 0 && $quantitaDisplonibile < 5) {
             $bannerText = $this->l('quasi terminato');
             $bannerColor = 'red';
-        } elseif ($quantityAvailable == 0) {
+        } elseif ($quantitaDisplonibile == 0) {
             $bannerText = $this->l('terminato');
             $bannerColor = 'red';
         }
 
-        // Passare i dati del banner al template
+        // Passa i dati del banner al template
         $this->smarty->assign(array(
             'bannerText' => $bannerText,
             'bannerColor' => $bannerColor,

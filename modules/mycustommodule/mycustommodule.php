@@ -12,7 +12,7 @@ class MyCustomModule extends Module
         $this->tab = 'front_office_features';
         $this->version = '1.0.1';
         $this->author = 'Marco';
-        $this->need_instance = 0;
+        $this->need_instance = 0; 
 
         parent::__construct();
 

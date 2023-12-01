@@ -31,82 +31,82 @@ class MyCustomModule extends Module
         return parent::uninstall();
     }
 
-    // public function hookDisplayProductActions($params)
-    // {
-        
-    //     // otteniamo la quantità disponbile del prodotto
-    //     $prodotto = $params['product'];
-    //     $quantitaDisponibile = $prodotto->quantita;
-
-    //     // Determina il testo e il colore del banner in base alla quantità disponibile
-    //     $bannerText = '';
-    //     $bannerColor = '';
-
-    //     if ($quantitaDisponibile >= 10) {
-    //         $bannerText = $this->l('Ampiamente disponibile');
-    //         $bannerColor = 'green';
-    //     } elseif ($quantitaDisponibile >= 5 && $quantitaDisponibile < 10) {
-    //         $bannerText = $this->l('Ultime possibilità');
-    //         $bannerColor = 'red';
-    //     } elseif ($quantitaDisponibile > 1 && $quantitaDisponibile < 5) {
-    //         $bannerText = $this->l('Quasi terminato');
-    //         $bannerColor = 'red';
-    //     } elseif ($quantitaDisponibile == 0) {
-    //         $bannerText = $this->l('Terminato');
-    //         $bannerColor = 'red';
-    //     }
-
-        
-
-    //     // Passa i dati del banner al template
-    //     $this->smarty->assign(array(
-    //         'bannerText' => $bannerText,
-    //         'bannerColor' => $bannerColor,
-    //     ));
-
-    //     // Mostra il banner nel template
-    //     return $this->display(__FILE__, 'views/templates/hook/product_tab_content.tpl');
-    // }
-
     public function hookDisplayProductActions($params)
     {
-        // Otteniamo le combinazioni del prodotto
-        $combinations = $params['product']['combinations'];
-    
-        // Inizializziamo le variabili
-       
+        
+        // otteniamo la quantità disponbile del prodotto
+        $prodotto = $params['product'];
+        $quantitaDisponibile = $prodotto->quantita;
+
+        // Determina il testo e il colore del banner in base alla quantità disponibile
         $bannerText = '';
-        $bannerColor = 'red'; 
-        foreach ($combinations as $combination) {
-            $quantityAvailable = StockAvailable::getQuantityAvailableByProduct($params['product']['id'], $combination['id_product_attribute']);
-    
-            if ($quantityAvailable >= 10) {
-                $bannerText = $this->l('Ampiamente disponibile');
-                $bannerColor = 'green';
-                break; 
-            } elseif ($quantityAvailable >= 5 && $quantityAvailable < 10) {
-                $bannerText = $this->l('Ultime possibilità');
-                $bannerColor = 'red'; 
-            } elseif ($quantityAvailable > 1 && $quantityAvailable < 5) {
-                $bannerText = $this->l('Quasi terminato');
-                $bannerColor = 'red'; 
-            } elseif ($quantityAvailable == 0) {
-                $bannerText = $this->l('Terminato');
-                $bannerColor = 'red';
-            }
-            
+        $bannerColor = '';
+
+        if ($quantitaDisponibile >= 10) {
+            $bannerText = $this->l('Ampiamente disponibile');
+            $bannerColor = 'green';
+        } elseif ($quantitaDisponibile >= 5 && $quantitaDisponibile < 10) {
+            $bannerText = $this->l('Ultime possibilità');
+            $bannerColor = 'red';
+        } elseif ($quantitaDisponibile > 1 && $quantitaDisponibile < 5) {
+            $bannerText = $this->l('Quasi terminato');
+            $bannerColor = 'red';
+        } elseif ($quantitaDisponibile == 0) {
+            $bannerText = $this->l('Terminato');
+            $bannerColor = 'red';
         }
 
-    
+        
+
         // Passa i dati del banner al template
         $this->smarty->assign(array(
             'bannerText' => $bannerText,
             'bannerColor' => $bannerColor,
         ));
-    
-        // Mostrare il banner nel template
+
+        // Mostra il banner nel template
         return $this->display(__FILE__, 'views/templates/hook/product_tab_content.tpl');
     }
+
+    // public function hookDisplayProductActions($params)
+    // {
+    //     // Otteniamo le combinazioni del prodotto
+    //     $combinations = $params['product']['combinations'];
+    
+    //     // Inizializziamo le variabili
+       
+    //     $bannerText = '';
+    //     $bannerColor = 'red'; 
+    //     foreach ($combinations as $combination) {
+    //         $quantityAvailable = StockAvailable::getQuantityAvailableByProduct($params['product']['id'], $combination['id_product_attribute']);
+    
+    //         if ($quantityAvailable >= 10) {
+    //             $bannerText = $this->l('Ampiamente disponibile');
+    //             $bannerColor = 'green';
+    //             break; 
+    //         } elseif ($quantityAvailable >= 5 && $quantityAvailable < 10) {
+    //             $bannerText = $this->l('Ultime possibilità');
+    //             $bannerColor = 'red'; 
+    //         } elseif ($quantityAvailable > 1 && $quantityAvailable < 5) {
+    //             $bannerText = $this->l('Quasi terminato');
+    //             $bannerColor = 'red'; 
+    //         } elseif ($quantityAvailable == 0) {
+    //             $bannerText = $this->l('Terminato');
+    //             $bannerColor = 'red';
+    //         }
+
+    //     }
+
+    
+    //     // Passa i dati del banner al template
+    //     $this->smarty->assign(array(
+    //         'bannerText' => $bannerText,
+    //         'bannerColor' => $bannerColor,
+    //     ));
+    
+    //     // Mostrare il banner nel template
+    //     return $this->display(__FILE__, 'views/templates/hook/product_tab_content.tpl');
+    // }
     
 
    

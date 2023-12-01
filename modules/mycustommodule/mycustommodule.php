@@ -36,7 +36,8 @@ class MyCustomModule extends Module
         
         // otteniamo la quantità disponbile del prodotto
         $prodotto = $params['product'];
-        $quantitaDisponibile = $prodotto->quantita;
+        echo '<pre>';print_r($prodotto->quantity);exit;
+        $quantitaDisponibile = $prodotto->quantity;
 
         // Determina il testo e il colore del banner in base alla quantità disponibile
         $bannerText = '';
@@ -45,6 +46,7 @@ class MyCustomModule extends Module
         if ($quantitaDisponibile >= 10) {
             $bannerText = $this->l('Ampiamente disponibile');
             $bannerColor = 'green';
+
         } elseif ($quantitaDisponibile >= 5 && $quantitaDisponibile < 10) {
             $bannerText = $this->l('Ultime possibilità');
             $bannerColor = 'red';

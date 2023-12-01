@@ -47,7 +47,7 @@ class MyCustomModule extends Module
         } elseif ($quantitaDisplonibile >= 5 && $quantitaDisplonibile < 10) {
             $bannerText = $this->l('Ultime possibilità');
             $bannerColor = 'red';
-        } elseif ($quantitaDisplonibile > 0 && $quantitaDisplonibile < 5) {
+        } elseif ($quantitaDisplonibile > 1 && $quantitaDisplonibile < 5) {
             $bannerText = $this->l('Quasi terminato');
             $bannerColor = 'red';
         } elseif ($quantitaDisplonibile == 0) {

@@ -36,7 +36,7 @@ class MyCustomModule extends Module
         
         // otteniamo la quantità disponbile del prodotto
         $prodotto = $params['product'];
-        echo '<pre>';print_r($prodotto->quantity);exit;
+        //echo '<pre>';print_r($prodotto->quantity);exit;
         $quantitaDisponibile = $prodotto->quantity;
 
         // Determina il testo e il colore del banner in base alla quantità disponibile

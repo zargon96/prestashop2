@@ -30,7 +30,6 @@ class MyCustomModule extends Module
         $this->description = $this->l('Adds a custom tab to product page.');
 
         $this->confirmUninstall = $this->l('sei sicuro di volerla disinstallare?'); 
-        $this->version = '1.0.1';
         $this->context->controller->addCSS($this->_path . 'css/style.css', 'all');
     }
 
@@ -64,10 +63,10 @@ class MyCustomModule extends Module
         } elseif ($quantitaDisponibile >= 5 && $quantitaDisponibile < 10) {
             $bannerText = $this->l('Ultime possibilità');
             $bannerColor = 'red';
-        } elseif ($quantitaDisponibile > 1 && $quantitaDisponibile < 5) {
+        } elseif ($quantitaDisponibile >= 1 && $quantitaDisponibile < 5) {
             $bannerText = $this->l('Quasi terminato');
             $bannerColor = 'red';
-        } elseif ($quantitaDisponibile == 0) {
+        } else{
             $bannerText = $this->l('Terminato');
             $bannerColor = 'red';
         }
@@ -85,4 +84,7 @@ class MyCustomModule extends Module
     }
    
 }
+
+
+
 

@@ -7,7 +7,7 @@ if (!defined('_PS_VERSION_')) {
 class MyCustomModule extends Module
 {
 
-
+    
 
     public function __construct()
     {
@@ -31,6 +31,7 @@ class MyCustomModule extends Module
 
         $this->confirmUninstall = $this->l('sei sicuro di volerla disinstallare?'); 
         $this->version = '1.0.1';
+        $this->context->controller->addCSS($this->_path . 'css/style.css', 'all');
     }
 
     public function install()
@@ -46,7 +47,7 @@ class MyCustomModule extends Module
 
     public function hookDisplayProductActions($params)
     {
-        
+       
         // otteniamo la quantità disponbile del prodotto
         $prodotto = $params['product'];
         //echo '<pre>';print_r($prodotto->quantity);exit;

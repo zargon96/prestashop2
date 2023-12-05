@@ -42,19 +42,8 @@ class MyCustomOrderOverride extends Module
             $params['reference'] = $newReference;
         }
 
-        return $params;
+        
+        return (string)$params['reference'];
     }
-    // public function hookActionObjectOrderAddAfter($params)
-    // {
-    
-    //     $orderId = $params['object']->id;
-    
-    //     // Ottenere l'ultimo valore di reference
-    //     $lastReference = (int)Db::getInstance()->getValue('SELECT (`reference`) FROM `'._DB_PREFIX_.'orders`');
-    
-    //     // Assegnare un nuovo valore incrementale al campo reference
-    //     $newReference = $lastReference + 1;
-    //     Db::getInstance()->update('orders', array('reference' => $newReference), 'id_order = ' . (int)$orderId);
-    // }
     
 }

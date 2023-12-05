@@ -29,6 +29,7 @@ class MyCustomOrderOverride extends Module
         return parent::uninstall();
     }
 
+
     public function hookActionGenerateDocumentReference($params)
     {
         // Codice per la generazione della referenza dell'ordine

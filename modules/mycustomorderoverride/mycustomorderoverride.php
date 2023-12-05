@@ -41,8 +41,6 @@ class MyCustomOrderOverride extends Module
             // Aggiorna la referenza nell'oggetto $params
             $params['reference'] = $newReference;
         }
-
-        
         return (string)$params['reference'];
     }
     

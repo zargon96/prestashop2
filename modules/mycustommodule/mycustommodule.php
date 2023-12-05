@@ -30,7 +30,8 @@ class MyCustomModule extends Module
         $this->description = $this->l('Adds a custom tab to product page.');
 
         $this->confirmUninstall = $this->l('sei sicuro di volerla disinstallare?'); 
-        $this->context->controller->addCSS($this->_path . 'css/style.css', 'all');
+        $this->context->controller->addCSS(__PS_BASE_URI__ . 'modules/' . $this->name . '/css/style.css', 'all');
+
     }
 
     public function install()

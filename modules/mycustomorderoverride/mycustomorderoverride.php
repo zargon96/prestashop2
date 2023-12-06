@@ -8,7 +8,7 @@ class MyCustomOrderOverride extends Module
     public function __construct()
     {
         $this->name = 'mycustomorderoverride';
-        $this->version = '1.0.1';
+        $this->version = '1.0.2';
         $this->author = 'Marco';
         $this->need_instance = 0;
 

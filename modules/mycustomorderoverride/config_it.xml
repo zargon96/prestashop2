@@ -2,7 +2,7 @@
 <module>
     <name>mycustomorderoverride</name>
     <displayName><![CDATA[My Custom Order Override]]></displayName>
-    <version><![CDATA[1.0.1]]></version>
+    <version><![CDATA[1.0.2]]></version>
     <description><![CDATA[Overrides the Order class for custom functionality.]]></description>
     <author><![CDATA[Marco]]></author>
     <tab><![CDATA[]]></tab>

@@ -6,9 +6,6 @@ if (!defined('_PS_VERSION_')) {
 
 class MyCustomModule extends Module
 {
-
-    
-
     public function __construct()
     {
         
@@ -20,7 +17,7 @@ class MyCustomModule extends Module
         $this->bootstrap = true;
         $this->name = 'mycustommodule';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.1';
+        $this->version = '1.0.2';
         $this->author = 'Marco';
         $this->need_instance = 0;  
 
@@ -36,18 +33,27 @@ class MyCustomModule extends Module
 
     public function install()
     {
-        return parent::install() &&
-            $this->registerHook('displayProductActions');
+        if (!parent::install() ||
+            !$this->registerHook('displayProductActions') ||
+            !$this->registerHook('displayProductAdditionalInfo') ||
+            !$this->createVisitsTable()
+        ) {
+            return false;
+        }
+
+        return true;
     }
+
 
     public function uninstall()
     {
         return parent::uninstall();
     }
 
+    
     public function hookDisplayProductActions($params)
     {
-       
+        
         // otteniamo la quantità disponbile del prodotto
         $prodotto = $params['product'];
         //echo '<pre>';print_r($prodotto->quantity);exit;
@@ -73,7 +79,6 @@ class MyCustomModule extends Module
         }
 
         
-
         // Passa i dati del banner al template
         $this->smarty->assign(array(
             'bannerText' => $bannerText,
@@ -83,7 +88,57 @@ class MyCustomModule extends Module
         // Mostra il banner nel template
         return $this->display(__FILE__, 'views/templates/hook/product_tab_content.tpl');
     }
+
+    public function hookDisplayProductAdditionalInfo($params)
+    {
+        $prodotto = $params['product'];
+
+        // Ottenere l'ID del prodotto
+        $productId = $prodotto->id;
+
+        // Incrementare il contatore delle visite
+        $this->incrementVisitsCounter($productId);
+
+        // Aggiungi il conteggio delle visite al banner
+        $visitsCount = $this->getVisitsCount($productId);
+
+        // Passa i dati del banner al template
+        $this->smarty->assign(array(
+            'visitsCount' => $visitsCount,
+        ));
+
+        return $this->display(__FILE__, 'views/templates/hook/product_banner.tpl');
+    }
+
+    private function createVisitsTable()
+    {
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'product_visits` (
+            `id_product` INT(11) NOT NULL,
+            `visits` INT(11) NOT NULL DEFAULT 0,
+            PRIMARY KEY (`id_product`)
+        ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    private function incrementVisitsCounter($productId)
+    {
+        $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'product_visits` (`id_product`, `visits`)
+                VALUES (' . (int)$productId . ', 1)
+                ON DUPLICATE KEY UPDATE `visits` = `visits` + 1;';
+
+        Db::getInstance()->execute($sql);
+    }
    
+    private function getVisitsCount($productId)
+    {
+        $sql = 'SELECT `visits` FROM `' . _DB_PREFIX_ . 'product_visits`
+                WHERE `id_product` = ' . (int)$productId;
+
+        return Db::getInstance()->getValue($sql);
+    }
+
+
 }
 
 

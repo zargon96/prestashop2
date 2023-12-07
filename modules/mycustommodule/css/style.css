@@ -1,7 +1,8 @@
-/* div#mycustomtab {
-    margin-left: 10px !important;
-}  */
 
 .mycustomtab{
     margin-left: 10px !important;
+}
+
+.product-banner{
+    margin-top: 10px !important;
 }

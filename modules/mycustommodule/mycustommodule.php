@@ -8,6 +8,7 @@ class MyCustomModule extends Module
 {
     public function __construct()
     {
+
         
         $this->ps_versions_compliancy = [
             'min' => '1.7.0.0',
@@ -29,6 +30,11 @@ class MyCustomModule extends Module
         $this->confirmUninstall = $this->l('sei sicuro di volerla disinstallare?'); 
         $this->context->controller->addCSS(__PS_BASE_URI__ . 'modules/' . $this->name . '/css/style.css', 'all');
 
+    }
+
+    public function isUsingNewTranslationSystem()
+    {
+        return true;
     }
 
     public function install()
@@ -96,10 +102,10 @@ class MyCustomModule extends Module
         // Ottenere l'ID del prodotto
         $productId = $prodotto->id;
 
-        // Incrementare il contatore delle visite
+        // Incrementa il contatore delle visite
         $this->incrementVisitsCounter($productId);
 
-        // Aggiungi il conteggio delle visite al banner
+        // Aggiunge il conteggio delle visite al banner
         $visitsCount = $this->getVisitsCount($productId);
 
         // Passa i dati del banner al template

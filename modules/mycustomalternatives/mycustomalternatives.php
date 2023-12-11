@@ -46,30 +46,34 @@ class MyCustomAlternatives extends Module
         $this->context->smarty->assign(array(
             'alternatives' => $alternatives,
         ));
-        // Restituisci il rendering del tuo template
-        return $this->display(__FILE__, 'views/templates/hook/product_banner.tpl');
+        
+        return $this->display(__FILE__, 'views/templates/hook/product_additional_info_custom.tpl');
     }
     
     private function getProductAlternatives($productId)
     {
-        // Ottieni le informazioni principali sul prodotto
-        $productInfo = Db::getInstance()->getRow('SELECT * FROM ' . _DB_PREFIX_ . 'product WHERE id_product = ' . (int)$productId);
+        $sql = 'SELECT pa.`id_product_attribute`, pa.`id_product`, pl.`name`, im.`id_image`
+                FROM `' . _DB_PREFIX_ . 'product_attribute` pa
+                LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pa.`id_product_attribute` = pl.`id_product_attribute`)
+                LEFT JOIN `' . _DB_PREFIX_ . 'image` im ON (pa.`id_product` = im.`id_product`)
+                WHERE pa.`id_product` = ' . (int)$productId . '
+                AND pl.`id_lang` = ' . (int)$this->context->language->id;
     
-        // Ottieni le informazioni sugli attributi del prodotto
-        $attributes = Db::getInstance()->executeS('
-            SELECT pa.*, agl.name AS attribute_name, al.name AS attribute_value
-            FROM ' . _DB_PREFIX_ . 'product_attribute pa
-            LEFT JOIN ' . _DB_PREFIX_ . 'product_attribute_combination pac ON (pa.id_product_attribute = pac.id_product_attribute)
-            LEFT JOIN ' . _DB_PREFIX_ . 'attribute a ON (pac.id_attribute = a.id_attribute)
-            LEFT JOIN ' . _DB_PREFIX_ . 'attribute_lang agl ON (a.id_attribute = agl.id_attribute)
-            LEFT JOIN ' . _DB_PREFIX_ . 'attribute_lang al ON (pac.id_attribute = al.id_attribute)
-            WHERE pa.id_product = ' . (int)$productId
-        );
+        $result = Db::getInstance()->executeS($sql);
     
-        return array(
-            'productInfo' => $productInfo,
-            'attributes' => $attributes,
-        );
+        $alternatives = array();
+        foreach ($result as $row) {
+            $alternative = array(
+                'id_product_attribute' => $row['id_product_attribute'],
+                'id_product' => $row['id_product'],
+                'name' => $row['name'],
+                'image' => $this->context->link->getImageLink($row['name'], $row['id_image']),
+            );
+            $alternatives[] = $alternative;
+        }
+    
+        return $alternatives;
     }
+    
     
 }

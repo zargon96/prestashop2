@@ -23,8 +23,7 @@ class MyCustomAlternatives extends Module
     public function install()
     {
         if (!parent::install() ||
-            !$this->registerHook('displayProductAdditionalInfoCustom') ||
-            !$this->createAlternativesTable()
+            !$this->registerHook('displayProductAdditionalInfoCustom') 
         ) {
             return false;
         }
@@ -39,38 +38,38 @@ class MyCustomAlternatives extends Module
     }
 
 
-    public function hookDisplayProductAdditionalInfoCustom($params)  
+    public function hookDisplayProductAdditionalInfoCustom($params)
     {
         $productId = (int)Tools::getValue('id_product');
-            $alternatives = $this->getProductAlternatives($productId);
+        $alternatives = $this->getProductAlternatives($productId);
 
-            $this->context->smarty->assign(array(
-                'alternatives' => $alternatives,
-            ));
-        return $this->display(__FILE__, 'views/templates/hook/product_additional_info_custom.tpl');
-        // return '<p>Test Custom Hook</p>';
+        $this->context->smarty->assign(array(
+            'alternatives' => $alternatives,
+        ));
+        // Restituisci il rendering del tuo template
+        return $this->display(__FILE__, 'views/templates/hook/product_banner.tpl');
     }
-
-    private function createAlternativesTable()
-    {
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'product_alternatives` (
-            `id_alternative` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-            `id_product` INT(11) UNSIGNED NOT NULL,
-            `name` VARCHAR(255) NOT NULL,
-            PRIMARY KEY (`id_alternative`),
-            KEY `id_product` (`id_product`)
-        ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
-
-        return Db::getInstance()->execute($sql);
-    }
-
-
+    
     private function getProductAlternatives($productId)
     {
-        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'product_alternatives` WHERE `id_product` = ' . (int)$productId;
-        $result = Db::getInstance()->executeS($sql);
-
-        return $result;
+        // Ottieni le informazioni principali sul prodotto
+        $productInfo = Db::getInstance()->getRow('SELECT * FROM ' . _DB_PREFIX_ . 'product WHERE id_product = ' . (int)$productId);
+    
+        // Ottieni le informazioni sugli attributi del prodotto
+        $attributes = Db::getInstance()->executeS('
+            SELECT pa.*, agl.name AS attribute_name, al.name AS attribute_value
+            FROM ' . _DB_PREFIX_ . 'product_attribute pa
+            LEFT JOIN ' . _DB_PREFIX_ . 'product_attribute_combination pac ON (pa.id_product_attribute = pac.id_product_attribute)
+            LEFT JOIN ' . _DB_PREFIX_ . 'attribute a ON (pac.id_attribute = a.id_attribute)
+            LEFT JOIN ' . _DB_PREFIX_ . 'attribute_lang agl ON (a.id_attribute = agl.id_attribute)
+            LEFT JOIN ' . _DB_PREFIX_ . 'attribute_lang al ON (pac.id_attribute = al.id_attribute)
+            WHERE pa.id_product = ' . (int)$productId
+        );
+    
+        return array(
+            'productInfo' => $productInfo,
+            'attributes' => $attributes,
+        );
     }
-
+    
 }

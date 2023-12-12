@@ -20,6 +20,11 @@ class MyCustomAlternatives extends Module
         $this->bootstrap = true;
     }
 
+    public function isUsingNewTranslationSystem()
+    {
+        return true;
+    }
+
     public function install()
     {
         if (!parent::install() ||
@@ -40,40 +45,46 @@ class MyCustomAlternatives extends Module
 
     public function hookDisplayProductAdditionalInfoCustom($params)
     {
-        $productId = (int)Tools::getValue('id_product');
+        $productId = (int)$params['product']->id;
+
         $alternatives = $this->getProductAlternatives($productId);
 
         $this->context->smarty->assign(array(
             'alternatives' => $alternatives,
         ));
-        
+
         return $this->display(__FILE__, 'views/templates/hook/product_additional_info_custom.tpl');
     }
-    
+
+
     private function getProductAlternatives($productId)
     {
-        $sql = 'SELECT pa.`id_product_attribute`, pa.`id_product`, pl.`name`, im.`id_image`
-                FROM `' . _DB_PREFIX_ . 'product_attribute` pa
-                LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pa.`id_product_attribute` = pl.`id_product_attribute`)
-                LEFT JOIN `' . _DB_PREFIX_ . 'image` im ON (pa.`id_product` = im.`id_product`)
-                WHERE pa.`id_product` = ' . (int)$productId . '
-                AND pl.`id_lang` = ' . (int)$this->context->language->id;
+        $sql = 'SELECT  pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
+             MIN(img.`id_image`) as id_image, p.`reference`
+            FROM `ps_product_attribute` pa
+            LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
+            LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
+            LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
+            WHERE pa.`id_product` = 1
+            GROUP BY  pa.`id_product`, p.`reference`';
+
+        // echo($sql);exit();
     
         $result = Db::getInstance()->executeS($sql);
     
         $alternatives = array();
-        foreach ($result as $row) {
-            $alternative = array(
-                'id_product_attribute' => $row['id_product_attribute'],
-                'id_product' => $row['id_product'],
-                'name' => $row['name'],
-                'image' => $this->context->link->getImageLink($row['name'], $row['id_image']),
-            );
-            $alternatives[] = $alternative;
+        foreach ($result as $alternative) {
+            $alternativeData = array(
+                'id_product' => $alternative['id_product'],
+                'names' => explode(',', $alternative['attribute_names']),
+                'image' => $this->context->link->getImageLink($alternative['id_product'] . '-' . $alternative['id_product_attribute'], $alternative['id_image']),
+                'reference' => $alternative['reference'],
+            );            
+            $alternatives[] = $alternativeData;
         }
     
         return $alternatives;
     }
     
-    
+
 }

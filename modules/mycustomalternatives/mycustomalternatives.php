@@ -6,6 +6,8 @@ if (!defined('_PS_VERSION_')) {
 
 class MyCustomAlternatives extends Module
 {
+    private $alternativePrefix = ''; 
+    private $maxAlternatives = 5; 
     public function __construct()
     {
         $this->name = 'mycustomalternatives';
@@ -57,37 +59,51 @@ class MyCustomAlternatives extends Module
         return $this->display(__FILE__, 'views/templates/hook/product_additional_info_custom.tpl');
     }
 
+
     private function getProductAlternatives($productId)
-{
-    // Query per i riferimenti che iniziano con "demo_"
-    $sqlDemo = 'SELECT pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
-                MIN(img.`id_image`) as id_image, p.`reference`
-                FROM `ps_product_attribute` pa
-                LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
-                LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
-                LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
-                WHERE p.`reference` LIKE "demo_%"
-                GROUP BY pa.`id_product`, p.`reference`';
+    {
+        // Query per ottenere le referenze del prodotto associate all'ID del prodotto dato
+        $sqlReferences = 'SELECT `reference` FROM `ps_product` WHERE `id_product` = ' . (int)$productId;
+        $productReferences = Db::getInstance()->executeS($sqlReferences);
 
-    $resultDemo = Db::getInstance()->executeS($sqlDemo);
-
-    $alternatives = array();
-    foreach ($resultDemo as $alternative) {
-        if ($alternative['id_product'] !== NULL) {
-            $alternativeData = array(
-                'id_product' => $alternative['id_product'],
-                'names' => explode(',', $alternative['attribute_names']),
-                'image' => $this->context->link->getImageLink($alternative['id_product'] . '-' . $alternative['id_product_attribute'], $alternative['id_image']),
-                'reference' => $alternative['reference'],
-                'link' => $this->context->link->getProductLink($alternative['id_product']),
-            );
-
-            $alternatives[] = $alternativeData;
+        // Verifica se sono state trovate delle referenze
+        if (empty($productReferences)) {
+            return array();
         }
+
+        $referencesCondition = 'p.`reference` LIKE "' . pSQL($this->alternativePrefix) . '%"';
+
+        // Query per ottenere le alternative in base alle referenze del prodotto
+        $sqlAlternatives = 'SELECT pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
+                            MIN(img.`id_image`) as id_image, p.`reference`
+                            FROM `ps_product_attribute` pa
+                            LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
+                            LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
+                            LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
+                            WHERE ' . $referencesCondition . '
+                            GROUP BY pa.`id_product`, p.`reference`
+                            LIMIT ' . (int)$this->maxAlternatives;
+
+        $resultAlternatives = Db::getInstance()->executeS($sqlAlternatives);
+
+        $alternatives = array();
+        foreach ($resultAlternatives as $alternative) {
+            if ($alternative['id_product'] !== NULL) {
+                $alternativeData = array(
+                    'id_product' => $alternative['id_product'],
+                    'names' => explode(',', $alternative['attribute_names']),
+                    'image' => $this->context->link->getImageLink($alternative['id_product'] . '-' . $alternative['id_product_attribute'], $alternative['id_image']),
+                    'reference' => $alternative['reference'],
+                    'link' => $this->context->link->getProductLink($alternative['id_product']),
+                );
+
+                $alternatives[] = $alternativeData;
+            }
+        }
+
+        return $alternatives;
     }
 
-    return $alternatives;
-}
 
 
     

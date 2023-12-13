@@ -1,7 +1,8 @@
 
 {if $alternatives}
+    <hr>
     <div class="product-alternatives">
-        <h3>{l s='Product Alternatives' d='Modules.Mycustomalternatives.Product'}</h3>
+        <h6>{l s='Product Alternatives' d='Modules.Mycustomalternatives.Product'}</h6>
         <ul>
             {foreach $alternatives as $alternative}
                 <br>

@@ -45,7 +45,8 @@ class MyCustomAlternatives extends Module
 
     public function hookDisplayProductAdditionalInfoCustom($params)
     {
-        $productId = (int)$params['product']->id;
+        
+        $productId = Tools::getValue('id_product');
 
         $alternatives = $this->getProductAlternatives($productId);
 
@@ -59,19 +60,17 @@ class MyCustomAlternatives extends Module
 
     private function getProductAlternatives($productId)
     {
-        $sql = 'SELECT  pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
-             MIN(img.`id_image`) as id_image, p.`reference`
-            FROM `ps_product_attribute` pa
-            LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
-            LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
-            LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
-            WHERE pa.`id_product` = 1
-            GROUP BY  pa.`id_product`, p.`reference`';
+        $sql = 'SELECT pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
+                MIN(img.`id_image`) as id_image, p.`reference`
+                FROM `ps_product_attribute` pa
+                LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
+                LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
+                LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
+                WHERE p.`id_product` = ' . (int)$productId . '
+                GROUP BY  pa.`id_product`, p.`reference`';
 
-        // echo($sql);exit();
-    
         $result = Db::getInstance()->executeS($sql);
-    
+        
         $alternatives = array();
         foreach ($result as $alternative) {
             $alternativeData = array(
@@ -82,9 +81,10 @@ class MyCustomAlternatives extends Module
             );            
             $alternatives[] = $alternativeData;
         }
-    
+
         return $alternatives;
     }
+
     
 
 }

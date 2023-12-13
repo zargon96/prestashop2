@@ -57,41 +57,6 @@ class MyCustomAlternatives extends Module
         return $this->display(__FILE__, 'views/templates/hook/product_additional_info_custom.tpl');
     }
 
-
-    // private function getProductAlternatives($productId)
-    // {
-    //     $sql = 'SELECT pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
-    //             MIN(img.`id_image`) as id_image, p.`reference`
-    //             FROM `ps_product_attribute` pa
-    //             LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
-    //             LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
-    //             LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
-    //             WHERE p.`id_product` = ' . (int)$productId . '
-    //             GROUP BY  pa.`id_product`, p.`reference`';
-
-    //     $result = Db::getInstance()->executeS($sql);
-        
-    //     $alternatives = array();
-    //     foreach ($result as $alternative) {
-    //         // Verifica se l'ID del prodotto è diverso da NULL prima di generare il link
-    //         if ($alternative['id_product'] !== NULL) {
-    //             $alternativeData = array(
-    //                 'id_product' => $alternative['id_product'],
-    //                 'names' => explode(',', $alternative['attribute_names']),
-    //                 'image' => $this->context->link->getImageLink($alternative['id_product'] . '-' . $alternative['id_product_attribute'], $alternative['id_image']),
-    //                 'reference' => $alternative['reference'],
-    //                 'link' => $this->context->link->getProductLink($alternative['id_product']),
-    //             );
-        
-    //             // var_dump($alternativeData['link']);
-    //             $alternatives[] = $alternativeData;
-    //         }
-    //     }
-        
-
-    //     return $alternatives;
-    // }
-
     private function getProductAlternatives($productId)
 {
     // Query per i riferimenti che iniziano con "demo_"

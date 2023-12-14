@@ -1,13 +1,13 @@
 <?php
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
 class MyCustomAlternatives extends Module
 {
-    private $alternativePrefix = ''; 
-    private $maxAlternatives = 5; 
+    private $alternativePrefix = '';
+    private $maxAlternatives = 5;
+
     public function __construct()
     {
         $this->name = 'mycustomalternatives';
@@ -30,24 +30,22 @@ class MyCustomAlternatives extends Module
     public function install()
     {
         if (!parent::install() ||
-            !$this->registerHook('displayProductAdditionalInfoCustom') 
+            !$this->registerHook('displayProductAdditionalInfoCustom')
         ) {
             return false;
         }
-    
+
         return true;
     }
 
     public function uninstall()
     {
         return parent::uninstall() &&
-            $this->unregisterHook('displayProductAdditionalInfoCustom'); 
+            $this->unregisterHook('displayProductAdditionalInfoCustom');
     }
-
 
     public function hookDisplayProductAdditionalInfoCustom($params)
     {
-        
         $productId = Tools::getValue('id_product');
 
         $alternatives = $this->getProductAlternatives($productId);
@@ -59,9 +57,21 @@ class MyCustomAlternatives extends Module
         return $this->display(__FILE__, 'views/templates/hook/product_additional_info_custom.tpl');
     }
 
+    private function ottieniValoreDinamico($productId)
+    {
+        // Esegui la query per ottenere la colonna 'reference' della tabella ps_product
+        $sqlReferences = 'SELECT `reference` FROM `'._DB_PREFIX_.'product` WHERE `id_product` = ' . (int)$productId;
+        $valoreDinamico = Db::getInstance()->getValue($sqlReferences);
+    
+        return $valoreDinamico;
+    }
+    
+
 
     private function getProductAlternatives($productId)
     {
+        $this->alternativePrefix = $this->ottieniValoreDinamico($productId);
+
         // Query per ottenere le referenze del prodotto associate all'ID del prodotto dato
         $sqlReferences = 'SELECT `reference` FROM `ps_product` WHERE `id_product` = ' . (int)$productId;
         $productReferences = Db::getInstance()->executeS($sqlReferences);
@@ -84,6 +94,8 @@ class MyCustomAlternatives extends Module
                             GROUP BY pa.`id_product`, p.`reference`
                             LIMIT ' . (int)$this->maxAlternatives;
 
+        //echo $sqlAlternatives; exit(); 
+
         $resultAlternatives = Db::getInstance()->executeS($sqlAlternatives);
 
         $alternatives = array();
@@ -103,9 +115,5 @@ class MyCustomAlternatives extends Module
 
         return $alternatives;
     }
-
-
-
-    
-
 }
+

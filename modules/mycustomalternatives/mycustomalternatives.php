@@ -62,6 +62,10 @@ class MyCustomAlternatives extends Module
         // Esegui la query per ottenere la colonna 'reference' della tabella ps_product
         $sqlReferences = 'SELECT `reference` FROM `'._DB_PREFIX_.'product` WHERE `id_product` = ' . (int)$productId;
         $valoreDinamico = Db::getInstance()->getValue($sqlReferences);
+
+        $valoreDinamico = explode('_', $valoreDinamico)[0];
+
+        //echo '<pre>'; print_r($valoreDinamico)[0]; exit();
     
         return $valoreDinamico;
     }
@@ -72,12 +76,8 @@ class MyCustomAlternatives extends Module
     {
         $this->alternativePrefix = $this->ottieniValoreDinamico($productId);
 
-        // Query per ottenere le referenze del prodotto associate all'ID del prodotto dato
-        $sqlReferences = 'SELECT `reference` FROM `ps_product` WHERE `id_product` = ' . (int)$productId;
-        $productReferences = Db::getInstance()->executeS($sqlReferences);
-
         // Verifica se sono state trovate delle referenze
-        if (empty($productReferences)) {
+        if (empty($this->alternativePrefix)) {
             return array();
         }
 

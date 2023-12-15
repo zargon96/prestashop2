@@ -83,6 +83,9 @@ class MyCustomAlternatives extends Module
 
         $referencesCondition = 'p.`reference` LIKE "' . pSQL($this->alternativePrefix) . '%"';
 
+        // Id del prodotto corrente
+        $currentProductId = (int)['id_product'];
+
         // Query per ottenere le alternative in base alle referenze del prodotto
         $sqlAlternatives = 'SELECT pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
                             MIN(img.`id_image`) as id_image, p.`reference`
@@ -90,13 +93,15 @@ class MyCustomAlternatives extends Module
                             LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
                             LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
                             LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
-                            WHERE ' . $referencesCondition . '
+                            WHERE ' . $referencesCondition . ' AND pa.`id_product` <> ' . $currentProductId . '
                             GROUP BY pa.`id_product`, p.`reference`
                             LIMIT ' . (int)$this->maxAlternatives;
 
         //echo $sqlAlternatives; exit(); 
 
+        // Esegui la query
         $resultAlternatives = Db::getInstance()->executeS($sqlAlternatives);
+
 
         $alternatives = array();
         foreach ($resultAlternatives as $alternative) {

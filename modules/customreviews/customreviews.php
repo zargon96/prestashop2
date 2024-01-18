@@ -29,18 +29,13 @@ class CustomReviews extends Module
     public function install()
     {
         return parent::install() &&
-            $this->registerHook('displayProductAdditionalInfoCustom') &&
-            $this->registerHook('displayProductTab');
+            $this->registerHook('displayProductAdditionalInfoCustom');
+
     }
 
     public function uninstall()
     {
         return parent::uninstall();
-    }
-
-    public function hookDisplayProductTab($params)
-    {
-        return $this->display(__FILE__, 'views/templates/hook/displayProductTab.tpl');
     }
 
     public function hookdisplayProductAdditionalInfoCustom($params)

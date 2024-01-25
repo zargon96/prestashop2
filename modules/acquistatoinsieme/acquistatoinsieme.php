@@ -3,22 +3,22 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class MyCustomAlternatives extends Module
+class AcquistatoInsieme extends Module
 {
     private $alternativePrefix = '';
-    private $maxAlternatives = 5;
+    private $maxAlternatives = 3;
 
     public function __construct()
     {
-        $this->name = 'mycustomalternatives';
-        $this->version = '1.0.2';
+        $this->name = 'acquistatoinsieme';
+        $this->version = '1.0.0';
         $this->author = 'Marco';
-        $this->need_instance = 0;
+        $this->need_instance = 0; 
 
-        parent::__construct();
+        parent::__construct(); 
 
-        $this->displayName = $this->l('My Custom Alternatives');
-        $this->description = $this->l('Display product alternatives at the bottom right of the product page.');
+        $this->displayName = $this->l('Acquistato spesso insieme');
+        $this->description = $this->l('spesso acquistato insieme custom');
         $this->bootstrap = true;
     }
 
@@ -52,9 +52,12 @@ class MyCustomAlternatives extends Module
 
         $this->context->smarty->assign(array(
             'alternatives' => $alternatives,
+            'module_path' => $this->_path,
         ));
 
-        return $this->display(__FILE__, 'views/templates/hook/product_additional_info_custom.tpl');
+        $this->context->controller->addJS($this->_path . 'js/acquistato_insieme.js');
+
+        return $this->display(__FILE__, 'views/templates/hook/acquistato_insieme.tpl');
     }
 
     private function ottieniValoreDinamico($productId)
@@ -70,8 +73,6 @@ class MyCustomAlternatives extends Module
         return $valoreDinamico;
     }
     
-
-
     private function getProductAlternatives($productId)
     {
         $this->alternativePrefix = $this->ottieniValoreDinamico($productId);
@@ -83,23 +84,19 @@ class MyCustomAlternatives extends Module
 
         $referencesCondition = 'p.`reference` LIKE "' . pSQL($this->alternativePrefix) . '%"';
 
-
         // Query per ottenere le alternative in base alle referenze del prodotto
         $sqlAlternatives = 'SELECT pa.`id_product`, GROUP_CONCAT(pl.`name`) as attribute_names,
-                            MIN(img.`id_image`) as id_image, p.`reference`
+                            MIN(img.`id_image`) as id_image, p.`reference`, pa.`price`
                             FROM `ps_product_attribute` pa
                             LEFT JOIN `ps_product_lang` pl ON (pa.`id_product` = pl.`id_product` AND pl.`id_lang` = 1)
                             LEFT JOIN `ps_image` img ON (pa.`id_product` = img.`id_product`)
                             LEFT JOIN `ps_product` p ON (pa.`id_product` = p.`id_product`)
                             WHERE ' . $referencesCondition . ' AND pa.`id_product` != ' . $productId . '
-                            GROUP BY pa.`id_product`, p.`reference`
+                            GROUP BY pa.`id_product`, p.`reference`, pa.`price`
                             LIMIT ' . (int)$this->maxAlternatives;
-
-        //echo $sqlAlternatives; exit(); 
 
         // Esegui la query
         $resultAlternatives = Db::getInstance()->executeS($sqlAlternatives);
-
 
         $alternatives = array();
         foreach ($resultAlternatives as $alternative) {
@@ -109,14 +106,18 @@ class MyCustomAlternatives extends Module
                     'names' => explode(',', $alternative['attribute_names']),
                     'image' => $this->context->link->getImageLink($alternative['id_product'] . '-' . $alternative['id_product'], $alternative['id_image']),
                     'reference' => $alternative['reference'],
+                    'price' => $alternative['price'],
                     'link' => $this->context->link->getProductLink($alternative['id_product']),
                 );
 
                 $alternatives[] = $alternativeData;
             }
+            //print_r($alternativeData);exit();
+            //echo '<pre>'; print_r($alternative); echo '</pre>'; exit();
         }
 
         return $alternatives;
     }
+    
+    
 }
-

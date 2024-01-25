@@ -106,7 +106,7 @@ class AcquistatoInsieme extends Module
                     'names' => explode(',', $alternative['attribute_names']),
                     'image' => $this->context->link->getImageLink($alternative['id_product'] . '-' . $alternative['id_product'], $alternative['id_image']),
                     'reference' => $alternative['reference'],
-                    'price' => $alternative['price'],
+                    'price' => Product::getPriceStatic($alternative['id_product']),
                     'link' => $this->context->link->getProductLink($alternative['id_product']),
                 );
 

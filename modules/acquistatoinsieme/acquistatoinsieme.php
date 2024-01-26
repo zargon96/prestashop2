@@ -59,6 +59,7 @@ class AcquistatoInsieme extends Module
             'total_price' => isset($totalPrice) ? $totalPrice : 0, // Imposta la variabile solo se è definita
             'checkbox_id_prefix' => 'checkbox_',
             'cartLink' => $cartLink,
+            
         ));
 
         $this->context->controller->addJS($this->_path . 'js/acquistato_insieme.js');
@@ -124,6 +125,5 @@ class AcquistatoInsieme extends Module
         }
 
         return $alternatives;
-    }
-    
+    }    
 }

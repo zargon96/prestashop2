@@ -67,7 +67,6 @@
 
     // Funzione per aggiornare lo stato del pulsante in base allo stato delle checkbox
     function updateAddToCartButtonState() {
-    console.log('Funzione updateAddToCartButtonState chiamata.');
         var atLeastOneChecked = Array.from(alternativeCheckboxes).some(function(checkbox) {
             return checkbox.checked;
         });
@@ -90,8 +89,8 @@
     // Chiamata iniziale per assicurarsi che lo stato del pulsante sia corretto
     updateAddToCartButtonState();
 
-    
 
+    
 </script>
 
 

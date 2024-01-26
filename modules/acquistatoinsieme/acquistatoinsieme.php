@@ -50,13 +50,12 @@ class AcquistatoInsieme extends Module
         $productId = Tools::getValue('id_product');
 
         $alternatives = $this->getProductAlternatives($productId);
-        //$totalPrice = $this->getTotalPriceIncludingAlternatives($productId);
-
+    
         $this->context->smarty->assign(array(
             'alternatives' => $alternatives,
             'module_path' => $this->_path,
             'total_price' => isset($totalPrice) ? $totalPrice : 0, // Imposta la variabile solo se è definita
-            'checkbox_id_prefix' => 'checkbox_', // Aggiungi questo
+            'checkbox_id_prefix' => 'checkbox_',
         ));
 
         $this->context->controller->addJS($this->_path . 'js/acquistato_insieme.js');
@@ -110,7 +109,7 @@ class AcquistatoInsieme extends Module
                     'names' => explode(',', $alternative['attribute_names']),
                     'image' => $this->context->link->getImageLink($alternative['id_product'] . '-' . $alternative['id_product'], $alternative['id_image']),
                     'reference' => $alternative['reference'],
-                    'selected' => false, // Aggiungi questo campo
+                    'selected' => false,
                     'price' => Product::getPriceStatic($alternative['id_product']),
                     'link' => $this->context->link->getProductLink($alternative['id_product']),
                 );
@@ -123,20 +122,5 @@ class AcquistatoInsieme extends Module
 
         return $alternatives;
     }
-
-    // private function getTotalPriceIncludingAlternatives($productId)
-    // {
-    //     $mainProductPrice = Product::getPriceStatic($productId);
-    //     $alternatives = $this->getProductAlternatives($productId);
-
-    //     $alternativesTotalPrice = 0;
-    //     foreach ($alternatives as $alternative) {
-    //         $alternativesTotalPrice += $alternative['price'];
-    //     }
-
-    //     $totalPrice = $mainProductPrice + $alternativesTotalPrice;
-
-    //     return $totalPrice;
-    // }
     
 }

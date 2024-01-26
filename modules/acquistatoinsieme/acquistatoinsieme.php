@@ -51,11 +51,14 @@ class AcquistatoInsieme extends Module
 
         $alternatives = $this->getProductAlternatives($productId);
     
+        $cartLink = $this->context->link->getPageLink('cart');
+
         $this->context->smarty->assign(array(
             'alternatives' => $alternatives,
             'module_path' => $this->_path,
             'total_price' => isset($totalPrice) ? $totalPrice : 0, // Imposta la variabile solo se è definita
             'checkbox_id_prefix' => 'checkbox_',
+            'cartLink' => $cartLink,
         ));
 
         $this->context->controller->addJS($this->_path . 'js/acquistato_insieme.js');

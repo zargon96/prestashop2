@@ -1,5 +1,5 @@
 
-{if $alternatives}
+{if $alternatives}    
     <div id="acquistato-insieme">
         <h3>Spesso acquistati insieme</h3>
         <div class="row">
@@ -13,7 +13,16 @@
                 <p>Prezzo totale prodotti: <span id="js-total-price">{number_format($total_price, 2)}</span></p>
             </div>
             <div class="col-md-6">
-                <input type="submit" name="addToCartButton" class="inputButton btn btn-primary js-add-to-cart" value=" Aggiungi tutti al carrello" />
+                <form action="{$cartLink}" method="post"  method="post" onsubmit="updatePrice()">
+                    <input type="hidden" name="controller" value="cart" />
+                    <input type="hidden" name="add" value="1" />
+                    {foreach $alternatives as $alternative}
+                        {if $alternative.selected}
+                            <input type="hidden" name="id_product_{$alternative.id_product}" value="{$alternative.id_product}" />
+                        {/if}
+                    {/foreach}
+                    <input type="submit" name="addToCartButton" class="inputButton btn btn-primary js-add-to-cart" value=" Aggiungi tutti al carrello" data-action="addSelectedToCart" />
+                </form>
             </div>
             
         </div>
@@ -58,6 +67,7 @@
 
     // Funzione per aggiornare lo stato del pulsante in base allo stato delle checkbox
     function updateAddToCartButtonState() {
+    console.log('Funzione updateAddToCartButtonState chiamata.');
         var atLeastOneChecked = Array.from(alternativeCheckboxes).some(function(checkbox) {
             return checkbox.checked;
         });
@@ -80,6 +90,7 @@
     // Chiamata iniziale per assicurarsi che lo stato del pulsante sia corretto
     updateAddToCartButtonState();
 
+    
 
 </script>
 

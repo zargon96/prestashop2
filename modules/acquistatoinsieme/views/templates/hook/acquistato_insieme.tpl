@@ -13,14 +13,10 @@
                 <p>Prezzo totale prodotti: <span id="js-total-price">{number_format($total_price, 2)}</span></p>
             </div>
             <div class="col-md-6">
-                <form action="{$cartLink}" method="post"  method="post" onsubmit="updatePrice()">
+                <form id="addToCartForm" action="{$cartLink}" method="post" onsubmit="updatePrice(); addToCart(); return false;">
                     <input type="hidden" name="controller" value="cart" />
                     <input type="hidden" name="add" value="1" />
-                    {foreach $alternatives as $alternative}
-                        {if $alternative.selected}
-                            <input type="hidden" name="id_product_{$alternative.id_product}" value="{$alternative.id_product}" />
-                        {/if}
-                    {/foreach}
+                    <input type="hidden" id="js-selected-products" name="id_product_" value="" />
                     <input type="submit" name="addToCartButton" class="inputButton btn btn-primary js-add-to-cart" value=" Aggiungi tutti al carrello" data-action="addSelectedToCart" />
                 </form>
             </div>
@@ -39,59 +35,61 @@
     </div>
 {/if}
 <script>
-    function updatePrice() {
-    let price = 0.00;
-    const checkboxes = document.getElementsByClassName("js-alternative-checkbox");
+    const alternativeCheckboxes = document.querySelectorAll('.js-alternative-checkbox');
+    const addToCartButton = document.querySelector('.js-add-to-cart');
 
-    for (let i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            price += parseFloat(checkboxes[i].getAttribute('data-price'));
+    function updatePrice() {
+        let price = 0.00;
+        const checkboxes = document.getElementsByClassName("js-alternative-checkbox");
+
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                price += parseFloat(checkboxes[i].getAttribute('data-price'));
+            }
+        }
+
+        document.getElementById("js-total-price").innerText = price.toFixed(2) + " €";
+    }
+
+    function updateSelectedProducts() {
+        const selectedIds = Array.from(document.querySelectorAll(".js-alternative-checkbox:checked"))
+            .map(checkbox => checkbox.getAttribute('value'));
+
+        document.getElementById("js-selected-products").value = selectedIds.join(',');
+    }
+
+    
+    function updateAddToCartButtonState() {
+        const atLeastOneChecked = Array.from(alternativeCheckboxes).some(checkbox => checkbox.checked);
+
+        if (atLeastOneChecked) {
+            addToCartButton.removeAttribute('disabled');
+        } else {
+            addToCartButton.setAttribute('disabled', true);
         }
     }
 
-    document.getElementById("js-total-price").innerText = price.toFixed(2) + " €";
-    }
+    alternativeCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            updateAddToCartButtonState();
+            updatePrice();
+            updateSelectedProducts();
+        });
+    });
 
-    // Collega la funzione all'evento di cambio di stato delle checkbox
-    const checkboxes = document.getElementsByClassName("js-alternative-checkbox");
-    for (let i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].addEventListener('change', updatePrice);
-    }
+    addToCartButton.addEventListener('click', () => {
+        document.getElementById('addToCartForm').submit();
+    });
+
+    // Funzione per aggiornare lo stato del pulsante all'avvio della pagina
+    updateAddToCartButtonState();
 
     // Chiamata iniziale per visualizzare il prezzo totale
     updatePrice();
 
-    // Seleziona tutti gli elementi checkbox
-    var alternativeCheckboxes = document.querySelectorAll('.js-alternative-checkbox');
-    var addToCartButton = document.querySelector('.js-add-to-cart');
-
-    // Funzione per aggiornare lo stato del pulsante in base allo stato delle checkbox
-    function updateAddToCartButtonState() {
-        var atLeastOneChecked = Array.from(alternativeCheckboxes).some(function(checkbox) {
-            return checkbox.checked;
-        });
-
-        // Controlla se almeno una checkbox è selezionata
-        if (atLeastOneChecked) {
-            addToCartButton.removeAttribute('disabled'); // Abilita l'input
-        } else {
-            addToCartButton.setAttribute('disabled', true); // Disabilita l'input
-        }
-    }
-
-    // Aggiorna lo stato del pulsante quando cambia lo stato delle checkbox
-    alternativeCheckboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            updateAddToCartButtonState();
-        });
-    });
-
-    // Chiamata iniziale per assicurarsi che lo stato del pulsante sia corretto
-    updateAddToCartButtonState();
-
-
     
 </script>
+
 
 
 

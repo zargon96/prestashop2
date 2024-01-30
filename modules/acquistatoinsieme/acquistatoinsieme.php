@@ -3,6 +3,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+
 class AcquistatoInsieme extends Module
 {
     private $alternativePrefix = '';
@@ -31,7 +32,7 @@ class AcquistatoInsieme extends Module
     public function install()
     {
         if (!parent::install() ||
-            !$this->registerHook('displayProductAdditionalInfoCustom')
+            !$this->registerHook('displayProductAdditionalInfoCustom') 
         ) {
             return false;
         }
@@ -43,7 +44,8 @@ class AcquistatoInsieme extends Module
     {
         return parent::uninstall() &&
             $this->unregisterHook('displayProductAdditionalInfoCustom');
-    }
+    }       
+
 
     public function hookDisplayProductAdditionalInfoCustom($params)
     {
@@ -126,4 +128,8 @@ class AcquistatoInsieme extends Module
 
         return $alternatives;
     }    
+
+
+    
+
 }

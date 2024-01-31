@@ -37,77 +37,81 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {
-  prestashop.blockcart = prestashop.blockcart || {};
+    prestashop.blockcart = prestashop.blockcart || {};
 
-  prestashop.blockcart.updateAddToCartButtonState = function () {
-    const atLeastOneChecked = $('.js-alternative-checkbox:checked').length > 0;
+    prestashop.blockcart.updateAddToCartButtonState = function () {
+        const atLeastOneChecked = $('.js-alternative-checkbox:checked').length > 0;
 
-    if (atLeastOneChecked) {
-      $('.js-add-to-cart').removeAttr('disabled');
-    } else {
-      $('.js-add-to-cart').attr('disabled', true);
-    }
-  };
+        if (atLeastOneChecked) {
+        $('.js-add-to-cart').removeAttr('disabled');
+        } else {
+        $('.js-add-to-cart').attr('disabled', true);
+        }
+    };
 
-  prestashop.blockcart.updatePrice = function () {
-    let price = 0.00;
+    prestashop.blockcart.updatePrice = function () {
+        let price = 0.00;
 
-    $('.js-alternative-checkbox:checked').each(function () {
-      price += parseFloat($(this).data('price'));
+        $('.js-alternative-checkbox:checked').each(function () {
+        price += parseFloat($(this).data('price'));
+        });
+
+        $('#js-total-price').text(price.toFixed(2) + ' €');
+    };
+
+    prestashop.blockcart.updateSelectedProducts = function () {
+        const selectedIds = $('.js-alternative-checkbox:checked').map(function () {
+        return $(this).val();
+        }).get();
+
+        $('#js-selected-products').val(selectedIds.join(','));
+    };
+
+    $('.js-alternative-checkbox').on('change', function () {
+        prestashop.blockcart.updateAddToCartButtonState();
+        prestashop.blockcart.updatePrice();
+        prestashop.blockcart.updateSelectedProducts();
     });
 
-    $('#js-total-price').text(price.toFixed(2) + ' €');
-  };
+    $('.js-add-to-cart').on('click', function () {
+        const selectedIds = $('.js-alternative-checkbox:checked').map(function () {
+        return $(this).val();
+        }).get();
 
-  prestashop.blockcart.updateSelectedProducts = function () {
-    const selectedIds = $('.js-alternative-checkbox:checked').map(function () {
-      return $(this).val();
-    }).get();
-
-    $('#js-selected-products').val(selectedIds.join(','));
-  };
-
-  $('.js-alternative-checkbox').on('change', function () {
-    prestashop.blockcart.updateAddToCartButtonState();
-    prestashop.blockcart.updatePrice();
-    prestashop.blockcart.updateSelectedProducts();
-  });
-
-  $('.js-add-to-cart').on('click', function () {
-    const selectedIds = $('.js-alternative-checkbox:checked').map(function () {
-      return $(this).val();
-    }).get();
-
-    selectedIds.forEach(function (productId) {
-      prestashop.blockcart.addToCart(productId);
+        selectedIds.forEach(function (productId) {
+        prestashop.blockcart.addToCart(productId);
+        });
     });
-  });
 
-  prestashop.blockcart.addToCart = function (productId) {
-    const formData = new FormData();
-    formData.append('controller', 'cart');
-    formData.append('add', '1');
-    formData.append('id_product', productId);
+    prestashop.blockcart.addToCart = function (productIds) {
+        const formData = new FormData();
 
-    fetch('index.php?controller=cart&action=add', {
-      method: 'POST',
-      body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error('Error adding to cart:', error);
+        productIds.forEach(productId => {
+            formData.append('controller', 'cart');
+            formData.append('add', '1');
+            formData.append('id_product', productId);
+
+            fetch('index.php?controller=cart&action=add', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+    };
+
+
+
+        prestashop.blockcart.updateAddToCartButtonState();
+
+        prestashop.blockcart.updatePrice();
+
     });
-  };
-
-  // Initial call to update the add to cart button state
-  prestashop.blockcart.updateAddToCartButtonState();
-
-  // Initial call to display the total price
-  prestashop.blockcart.updatePrice();
-});
 
     
 

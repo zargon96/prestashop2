@@ -48,7 +48,8 @@ class AcquistatoInsieme extends Module
     {
         if (!parent::install() ||
             !$this->registerHook('displayProductAdditionalInfoCustom') ||
-            !$this->registerHook('displayHeader')
+            !$this->registerHook('displayHeader')||
+            !$this->registerHook('displayShoppingCart')
         ) {
             return false;
         }
@@ -61,6 +62,7 @@ class AcquistatoInsieme extends Module
         return parent::uninstall() &&
             $this->unregisterHook('displayProductAdditionalInfoCustom');
             $this->unregisterHook('displayHeader');
+            $this->unregisterHook('displayShoppingCart');
     }       
 
 

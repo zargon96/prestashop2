@@ -6,6 +6,7 @@ if (!defined('_PS_VERSION_')) {
 
 class AcquistatoInsieme extends Module
 {
+    const PS_16_EQUIVALENT_MODULE = 'blockcart';
     private $alternativePrefix = '';
     private $maxAlternatives = 3;
 
@@ -21,8 +22,22 @@ class AcquistatoInsieme extends Module
         $this->displayName = $this->l('Acquistato spesso insieme');
         $this->description = $this->l('spesso acquistato insieme custom');
         $this->bootstrap = true;
+        $this->controllers = ['ajax'];
 
     }
+
+    public function hookDisplayHeader()
+    {
+        if (Configuration::isCatalogMode()) {
+            return;
+        }
+
+        if (Configuration::get('PS_BLOCK_CART_AJAX')) {
+            $this->context->controller->registerJavascript('modules-shoppingcart', 'modules/' . $this->name . '/ps_shoppingcart.js', ['position' => 'bottom', 'priority' => 150]);
+        }
+    }
+
+
 
     public function isUsingNewTranslationSystem()
     {
@@ -32,7 +47,8 @@ class AcquistatoInsieme extends Module
     public function install()
     {
         if (!parent::install() ||
-            !$this->registerHook('displayProductAdditionalInfoCustom') 
+            !$this->registerHook('displayProductAdditionalInfoCustom') ||
+            !$this->registerHook('displayHeader')
         ) {
             return false;
         }
@@ -44,6 +60,7 @@ class AcquistatoInsieme extends Module
     {
         return parent::uninstall() &&
             $this->unregisterHook('displayProductAdditionalInfoCustom');
+            $this->unregisterHook('displayHeader');
     }       
 
 

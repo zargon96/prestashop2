@@ -26,7 +26,7 @@
         <ul>
             {foreach $alternatives as $alternative}
                 <li> 
-                    <input type="checkbox" name="selected_alternatives[]" class="js-alternative-checkbox" value="{$alternative.price}" data-price="{$alternative.price}" checked />
+                    <input type="checkbox" name="selected_alternatives[]" class="js-alternative-checkbox" value="{$alternative.price} {$product.id_product}" data-price="{$alternative.price} {$product.id_product}" checked />
                     <label><a href="{$alternative.link}" target="_blank">{$alternative.names.0}</a></label>
                     <span class="js-alternative-price" data-price="{$alternative.price}"> - {number_format($alternative.price, 2)} €</span>
                 </li>
@@ -72,9 +72,6 @@
         prestashop.blockcart.updatePrice();
 
     });
-
-    
-    
 
 
 </script>

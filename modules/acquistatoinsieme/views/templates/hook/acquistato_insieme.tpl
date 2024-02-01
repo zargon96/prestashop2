@@ -13,7 +13,7 @@
                 <p>Prezzo totale prodotti: <span id="js-total-price">{number_format($total_price, 2)}</span></p>
             </div>
             <div class="col-md-6">
-                <form id="addToCartForm" action="{$cartLink}" method="post" onsubmit="updatePrice(); addToCart(); return false;" enctype="multipart/form-data">
+                <form id="addToCartForm" action="{$cartLink}" method="post" onsubmit="updatePrice(); return false;" enctype="multipart/form-data">
                     <input type="hidden" name="controller" value="cart" />
                     <input type="hidden" name="add" value="1" />
                     <input type="hidden" id="js-selected-products" name="selected_products" value="" />
@@ -26,7 +26,7 @@
         <ul>
             {foreach $alternatives as $alternative}
                 <li> 
-                    <input type="checkbox" name="selected_alternatives[]" class="js-alternative-checkbox" value="{$alternative.price} {$product.id_product}" data-price="{$alternative.price} {$product.id_product}" checked />
+                    <input type="checkbox" name="selected_alternatives[]" class="js-alternative-checkbox" value="{$alternative.price}" data-price="{$alternative.price}" checked />
                     <label><a href="{$alternative.link}" target="_blank">{$alternative.names.0}</a></label>
                     <span class="js-alternative-price" data-price="{$alternative.price}"> - {number_format($alternative.price, 2)} €</span>
                 </li>
@@ -53,59 +53,19 @@
         let price = 0.00;
 
         $('.js-alternative-checkbox:checked').each(function () {
-        price += parseFloat($(this).data('price'));
+            price += parseFloat($(this).data('price'));
         });
 
         $('#js-total-price').text(price.toFixed(2) + ' €');
     };
 
-    prestashop.blockcart.updateSelectedProducts = function () {
-        const selectedIds = $('.js-alternative-checkbox:checked').map(function () {
-        return $(this).val();
-        }).get();
 
-        $('#js-selected-products').val(selectedIds.join(','));
-    };
 
     $('.js-alternative-checkbox').on('change', function () {
         prestashop.blockcart.updateAddToCartButtonState();
         prestashop.blockcart.updatePrice();
-        prestashop.blockcart.updateSelectedProducts();
+
     });
-
-    $('.js-add-to-cart').on('click', function () {
-        const selectedIds = $('.js-alternative-checkbox:checked').map(function () {
-        return $(this).val();
-        }).get();
-
-        selectedIds.forEach(function (productId) {
-        prestashop.blockcart.addToCart(productId);
-        });
-    });
-
-    prestashop.blockcart.addToCart = function (productIds) {
-        const formData = new FormData();
-
-        productIds.forEach(productId => {
-            formData.append('controller', 'cart');
-            formData.append('add', '1');
-            formData.append('id_product', productId);
-
-            fetch('index.php?controller=cart&action=add', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        });
-    };
-
-
 
         prestashop.blockcart.updateAddToCartButtonState();
 
@@ -113,6 +73,7 @@
 
     });
 
+    
     
 
 

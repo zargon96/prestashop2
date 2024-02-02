@@ -37,8 +37,6 @@ class AcquistatoInsieme extends Module
         }
     }
 
-
-
     public function isUsingNewTranslationSystem()
     {
         return true;
@@ -60,10 +58,11 @@ class AcquistatoInsieme extends Module
     public function uninstall()
     {
         return parent::uninstall() &&
-            $this->unregisterHook('displayProductAdditionalInfoCustom');
-            $this->unregisterHook('displayHeader');
+            $this->unregisterHook('displayProductAdditionalInfoCustom') &&
+            $this->unregisterHook('displayHeader') &&
             $this->unregisterHook('displayShoppingCart');
-    }       
+    }
+          
 
 
     public function hookDisplayProductAdditionalInfoCustom($params)
@@ -82,8 +81,6 @@ class AcquistatoInsieme extends Module
             'cartLink' => $cartLink,
             
         ));
-
-        $this->context->controller->addJS($this->_path . 'js/acquistato_insieme.js');
 
         return $this->display(__FILE__, 'views/templates/hook/acquistato_insieme.tpl');
     }
@@ -141,13 +138,13 @@ class AcquistatoInsieme extends Module
 
                 $alternatives[] = $alternativeData;
             }
-            //print_r($alternativeData);exit();
             //echo '<pre>'; print_r($alternative); echo '</pre>'; exit();
         }
 
         return $alternatives;
     }    
 
-
+    
+    
 
 }

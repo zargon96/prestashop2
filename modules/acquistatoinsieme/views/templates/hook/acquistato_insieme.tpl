@@ -17,7 +17,7 @@
                     <input type="hidden" name="controller" value="cart" />
                     <input type="hidden" name="add" value="1" />
                     <input type="hidden" id="js-selected-products" name="selected_products" value="" />
-                    <input type="submit" id="addToCartButton" name="addToCartButton" class="inputButton btn btn-primary js-add-to-cart" value=" Aggiungi tutti al carrello" data-action="addSelectedToCart" />
+                    <input type="submit" id="addToCartButton" name="addToCartButton" class="inputButton btn btn-primary js-add-to-cart" onclick="addProducts()" value=" Aggiungi tutti al carrello" data-action="addSelectedToCart" />
                 </form>
             </div>
             
@@ -84,51 +84,39 @@
 
     });
 
-    function addToCart(selectedProducts) {
-    // Recupera l'URL di aggiornamento del carrello
-    var refreshURL = $('.blockcart').data('refresh-url');
-
-    // Crea i dati della richiesta
-    var requestData = {
-        action: 'add',
-        products: selectedProducts.join(','),
-    };
-
-    // Invia una richiesta POST all'API di PrestaShop
-    $.post(refreshURL, requestData).then(function (resp) {
-        // Aggiorna il blocco carrello
-        $('.blockcart').replaceWith($(resp.preview).find('.blockcart'));
-
-        // Emetti l'evento `updateCart` per aggiornare il numero di articoli nel carrello
-        prestashop.emit('updateCart', {
-            reason: {
-                linkAction: 'add',
-            },
-        });
-    }).fail(function (resp) {
-        prestashop.emit('handleError', { eventType: 'updateShoppingCart', resp: resp });
-    });
-
-    $('#addToCartButton').on('click', function () {
-        // Raccogli tutti i prodotti selezionati
-        let selectedProducts = [];
+    function addProducts() {
+        var selectedProducts = [];
 
         $('.js-alternative-checkbox:checked').each(function () {
-            let productInfo = $(this).val().split(' ');
-            let productId = productInfo[1];
+            var productInfo = $(this).val().split(' ');
+            var productId = productInfo[1];
             selectedProducts.push(productId);
         });
 
-        // Aggiungi il prodotto principale (se non già presente)
-        if ($.inArray('{$product.id_product}', selectedProducts) === -1) {
-            selectedProducts.push('{$product.id_product}');
-        }
-
-        // Invia la richiesta di aggiunta al carrello
         addToCart(selectedProducts);
-    });
-}
-    
+    }
+
+    function addToCart(selectedProducts) {
+    var refreshURL = $('.blockcart').data('refresh-url');
+
+        var requestData = {
+            action: 'add',
+            products: selectedProducts.join(','),
+        };
+
+        $.post(refreshURL, requestData).then(function (resp) {
+            $('.blockcart').replaceWith($(resp.preview).find('.blockcart'));
+
+            prestashop.emit('updateCart', {
+                reason: {
+                    linkAction: 'add',
+                },
+            });
+        }).fail(function (resp) {
+            prestashop.emit('handleError', { eventType: 'updateShoppingCart', resp: resp });
+        });
+    }
+
    
 
 </script>

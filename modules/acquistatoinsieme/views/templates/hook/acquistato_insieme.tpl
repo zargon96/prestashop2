@@ -99,11 +99,17 @@
     function addToCart(selectedProducts) {
     var refreshURL = $('.blockcart').data('refresh-url');
 
+    // Itera attraverso tutti i prodotti selezionati
+    selectedProducts.forEach(function(productId) {
         var requestData = {
-            action: 'add',
-            products: selectedProducts.join(','),
+            controller: 'cart',
+            add: 1,
+            ajax: true,
+            id_product: productId,
+            token: prestashop.static_token
         };
 
+        // Invia una richiesta AJAX per aggiungere il prodotto al carrello
         $.post(refreshURL, requestData).then(function (resp) {
             $('.blockcart').replaceWith($(resp.preview).find('.blockcart'));
 
@@ -115,7 +121,11 @@
         }).fail(function (resp) {
             prestashop.emit('handleError', { eventType: 'updateShoppingCart', resp: resp });
         });
-    }
+    });
+}
+
+
+
 
    
 
